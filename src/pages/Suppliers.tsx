@@ -1,14 +1,16 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Users, Plus, Search, Star, Mail, Phone } from 'lucide-react';
+import { Users, Search, Star, Mail, Phone, Eye, ShoppingCart } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
+import NewSupplierModal from "@/components/modals/NewSupplierModal";
 
 export default function Suppliers() {
   const [searchTerm, setSearchTerm] = useState('');
+  const { toast } = useToast();
 
   const suppliers = [
     {
@@ -80,6 +82,20 @@ export default function Suppliers() {
     supplier.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleViewProfile = (supplierId: string) => {
+    toast({
+      title: "Профиль поставщика",
+      description: `Открыт профиль поставщика ${supplierId}`,
+    });
+  };
+
+  const handleViewOrders = (supplierId: string) => {
+    toast({
+      title: "Заказы поставщика",
+      description: `Открыты заказы для поставщика ${supplierId}`,
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -89,10 +105,7 @@ export default function Suppliers() {
             Управление поставщиками и оценка их эффективности
           </p>
         </div>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Добавить поставщика
-        </Button>
+        <NewSupplierModal />
       </div>
 
       {/* Статистика поставщиков */}
@@ -215,10 +228,20 @@ export default function Suppliers() {
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-1">
-                      <Button size="sm" variant="ghost">
+                      <Button 
+                        size="sm" 
+                        variant="ghost"
+                        onClick={() => handleViewProfile(supplier.id)}
+                      >
+                        <Eye className="mr-1 h-3 w-3" />
                         Профиль
                       </Button>
-                      <Button size="sm" variant="ghost">
+                      <Button 
+                        size="sm" 
+                        variant="ghost"
+                        onClick={() => handleViewOrders(supplier.id)}
+                      >
+                        <ShoppingCart className="mr-1 h-3 w-3" />
                         Заказы
                       </Button>
                     </div>

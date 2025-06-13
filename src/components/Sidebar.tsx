@@ -20,11 +20,8 @@ import {
   Settings,
   BarChart3,
   Users,
-  Package,
   Factory,
   DollarSign,
-  Calendar,
-  Bell,
 } from 'lucide-react';
 
 const menuItems = [
@@ -81,11 +78,15 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader className="p-4">
-        <div className="flex items-center gap-2">
-          <Package className="h-8 w-8 text-blue-600" />
+        <div className="flex items-center gap-3">
+          <img 
+            src="https://www.ladogaspb.ru/upload/iblock/f1b/f1b67860b56ebb11f4c9bf4f165c204a.jpg" 
+            alt="Логотип компании" 
+            className="h-10 w-10 rounded-lg object-cover"
+          />
           <div>
-            <h2 className="text-lg font-bold">Система Закупок</h2>
-            <p className="text-sm text-muted-foreground">Управление процессами</p>
+            <h2 className="text-lg font-bold">Ладога СПб</h2>
+            <p className="text-sm text-muted-foreground">Система управления</p>
           </div>
         </div>
       </SidebarHeader>

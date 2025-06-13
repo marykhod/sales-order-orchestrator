@@ -1,67 +1,44 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Filter, Eye, Edit, Mail } from 'lucide-react';
+import { FileText, Search, Eye, Edit, Mail } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
+import NewRequestModal from "@/components/modals/NewRequestModal";
+import FiltersModal from "@/components/modals/FiltersModal";
 
 export default function Requests() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const { toast } = useToast();
 
   const requests = [
     {
       id: "REQ-001",
       date: "2024-06-13",
-      client: "ООО Техника",
-      description: "Направляющие 500мм - 10шт",
+      client: "ООО Машстрой",
+      description: "Подшипники 6208",
+      priority: "Высокий",
       status: "Новый",
-      priority: "Высокий",
-      supplier: "-",
-      daysOverdue: 0,
+      manager: "Иванов И.И.",
     },
     {
-      id: "REQ-002",
+      id: "REQ-002", 
       date: "2024-06-12",
-      client: "ЗАО Строймаш",
-      description: "Подшипники SKF - 25шт",
-      status: "В обработке",
+      client: "АО Промтех",
+      description: "Направляющие 25мм",
       priority: "Средний",
-      supplier: "Поставщик А",
-      daysOverdue: 2,
-    },
-    {
-      id: "REQ-003",
-      date: "2024-06-11",
-      client: "ИП Иванов",
-      description: "Ремни приводные - 5шт",
-      status: "Ожидает ответа",
-      priority: "Низкий",
-      supplier: "Поставщик Б",
-      daysOverdue: 3,
-    },
-    {
-      id: "REQ-004",
-      date: "2024-06-10",
-      client: "ООО Промтех",
-      description: "Муфты соединительные - 15шт",
-      status: "Готов",
-      priority: "Высокий",
-      supplier: "Поставщик В",
-      daysOverdue: 0,
+      status: "В обработке",
+      manager: "Петров П.П.",
     },
   ];
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Новый': return 'bg-gray-100 text-gray-800';
-      case 'В обработке': return 'bg-blue-100 text-blue-800';
-      case 'Ожидает ответа': return 'bg-yellow-100 text-yellow-800';
-      case 'Готов': return 'bg-green-100 text-green-800';
-      case 'Просрочен': return 'bg-red-100 text-red-800';
+      case 'Новый': return 'bg-blue-100 text-blue-800';
+      case 'В обработке': return 'bg-yellow-100 text-yellow-800';
+      case 'Завершен': return 'bg-green-100 text-green-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -75,13 +52,31 @@ export default function Requests() {
     }
   };
 
-  const filteredRequests = requests.filter(request => {
-    const matchesSearch = request.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         request.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         request.id.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || request.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  const handleView = (id: string) => {
+    toast({
+      title: "Просмотр запроса",
+      description: `Открыт запрос ${id}`,
+    });
+  };
+
+  const handleEdit = (id: string) => {
+    toast({
+      title: "Редактирование",
+      description: `Редактирование запроса ${id}`,
+    });
+  };
+
+  const handleSendEmail = (id: string) => {
+    toast({
+      title: "Письмо отправлено",
+      description: `Письмо по запросу ${id} отправлено поставщикам`,
+    });
+  };
+
+  const filteredRequests = requests.filter(request =>
+    request.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    request.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="space-y-6">
@@ -89,49 +84,70 @@ export default function Requests() {
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Запросы</h2>
           <p className="text-muted-foreground">
-            Управление входящими запросами от клиентов
+            Управление запросами от клиентов
           </p>
         </div>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Новый запрос
-        </Button>
+        <div className="flex gap-2">
+          <FiltersModal />
+          <NewRequestModal />
+        </div>
       </div>
 
-      {/* Фильтры */}
+      {/* Статистика запросов */}
+      <div className="grid gap-4 md:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Всего запросов</CardTitle>
+            <FileText className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">156</div>
+            <p className="text-xs text-muted-foreground">За текущий месяц</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Новые запросы</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">42</div>
+            <p className="text-xs text-muted-foreground">Не обработано</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">В обработке</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">64</div>
+            <p className="text-xs text-muted-foreground">В работе у менеджеров</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Завершено</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">50</div>
+            <p className="text-xs text-muted-foreground">Успешно обработано</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Поиск */}
       <Card>
         <CardHeader>
-          <CardTitle>Фильтры и поиск</CardTitle>
+          <CardTitle>Поиск запросов</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Поиск по клиенту, описанию или номеру..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-8"
-                />
-              </div>
-            </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="Статус" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Все статусы</SelectItem>
-                <SelectItem value="Новый">Новый</SelectItem>
-                <SelectItem value="В обработке">В обработке</SelectItem>
-                <SelectItem value="Ожидает ответа">Ожидает ответа</SelectItem>
-                <SelectItem value="Готов">Готов</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant="outline">
-              <Filter className="mr-2 h-4 w-4" />
-              Фильтры
-            </Button>
+          <div className="relative w-full max-w-md">
+            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Поиск по клиенту или описанию..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-8"
+            />
           </div>
         </CardContent>
       </Card>
@@ -145,48 +161,55 @@ export default function Requests() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>№ Запроса</TableHead>
+                <TableHead>ID</TableHead>
                 <TableHead>Дата</TableHead>
                 <TableHead>Клиент</TableHead>
                 <TableHead>Описание</TableHead>
-                <TableHead>Статус</TableHead>
                 <TableHead>Приоритет</TableHead>
-                <TableHead>Поставщик</TableHead>
+                <TableHead>Статус</TableHead>
+                <TableHead>Менеджер</TableHead>
                 <TableHead>Действия</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredRequests.map((request) => (
-                <TableRow key={request.id} className={request.daysOverdue > 5 ? 'bg-red-50' : ''}>
+                <TableRow key={request.id}>
                   <TableCell className="font-medium">{request.id}</TableCell>
                   <TableCell>{request.date}</TableCell>
                   <TableCell>{request.client}</TableCell>
                   <TableCell>{request.description}</TableCell>
                   <TableCell>
-                    <Badge className={getStatusColor(request.status)}>
-                      {request.status}
-                    </Badge>
-                    {request.daysOverdue > 5 && (
-                      <Badge variant="destructive" className="ml-1">
-                        Просрочен {request.daysOverdue}д
-                      </Badge>
-                    )}
-                  </TableCell>
-                  <TableCell>
                     <Badge className={getPriorityColor(request.priority)}>
                       {request.priority}
                     </Badge>
                   </TableCell>
-                  <TableCell>{request.supplier}</TableCell>
+                  <TableCell>
+                    <Badge className={getStatusColor(request.status)}>
+                      {request.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{request.manager}</TableCell>
                   <TableCell>
                     <div className="flex gap-1">
-                      <Button size="sm" variant="ghost">
+                      <Button 
+                        size="sm" 
+                        variant="ghost"
+                        onClick={() => handleView(request.id)}
+                      >
                         <Eye className="h-4 w-4" />
                       </Button>
-                      <Button size="sm" variant="ghost">
+                      <Button 
+                        size="sm" 
+                        variant="ghost"
+                        onClick={() => handleEdit(request.id)}
+                      >
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button size="sm" variant="ghost">
+                      <Button 
+                        size="sm" 
+                        variant="ghost"
+                        onClick={() => handleSendEmail(request.id)}
+                      >
                         <Mail className="h-4 w-4" />
                       </Button>
                     </div>
