@@ -77,15 +77,14 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader className="p-4">
-        <div className="flex items-center gap-3">
+      <SidebarHeader className="p-4 pb-2">
+        <div className="flex flex-col items-center gap-2">
           <img 
-            src="https://www.ladogaspb.ru/upload/iblock/f1b/f1b67860b56ebb11f4c9bf4f165c204a.jpg" 
-            alt="Логотип компании" 
-            className="h-10 w-10 rounded-lg object-cover"
+            src="/lovable-uploads/10bc8dcf-ca34-4ca3-a7d3-86be2f7ba3bd.png" 
+            alt="Логотип LADOGA" 
+            className="h-12 w-auto object-contain"
           />
-          <div>
-            <h2 className="text-lg font-bold">Ладога СПб</h2>
+          <div className="text-center">
             <p className="text-sm text-muted-foreground">Система управления</p>
           </div>
         </div>
