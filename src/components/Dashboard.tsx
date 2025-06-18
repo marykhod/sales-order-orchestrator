@@ -62,7 +62,7 @@ export function Dashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-3xl font-bold tracking-tight">Дашборд</h2>
+        <h2 className="text-3xl font-bold tracking-tight">Аналитика</h2>
         <p className="text-muted-foreground">
           Обзор текущего состояния системы
         </p>
