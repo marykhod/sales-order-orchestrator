@@ -1,18 +1,20 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { FileText, Search, Eye, Edit, Mail } from 'lucide-react';
+import { FileText, Search, Eye, Edit, Mail, Filter } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import NewRequestModal from "@/components/modals/NewRequestModal";
-import FiltersModal from "@/components/modals/FiltersModal";
 
 export default function Requests() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [priorityFilter, setPriorityFilter] = useState('');
+  const [managerFilter, setManagerFilter] = useState('');
   const { toast } = useToast();
 
   const requests = [
@@ -68,10 +70,22 @@ export default function Requests() {
     });
   };
 
-  const filteredRequests = requests.filter(request =>
-    request.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    request.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const clearFilters = () => {
+    setSearchTerm('');
+    setStatusFilter('');
+    setPriorityFilter('');
+    setManagerFilter('');
+  };
+
+  const filteredRequests = requests.filter(request => {
+    const matchesSearch = request.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      request.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = !statusFilter || request.status === statusFilter;
+    const matchesPriority = !priorityFilter || request.priority === priorityFilter;
+    const matchesManager = !managerFilter || request.manager === managerFilter;
+    
+    return matchesSearch && matchesStatus && matchesPriority && matchesManager;
+  });
 
   return (
     <div className="space-y-6">
@@ -83,7 +97,6 @@ export default function Requests() {
           </p>
         </div>
         <div className="flex gap-2">
-          <FiltersModal />
           <NewRequestModal />
         </div>
       </div>
@@ -129,20 +142,76 @@ export default function Requests() {
         </Card>
       </div>
 
-      {/* Поиск */}
+      {/* Фильтрация в одну строку */}
       <Card>
         <CardHeader>
-          <CardTitle>Поиск запросов</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Filter className="h-5 w-5" />
+            Фильтры
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="relative w-full max-w-md">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Поиск по клиенту или описанию..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-8"
-            />
+          <div className="flex flex-wrap gap-4 items-end">
+            <div className="flex-1 min-w-[200px]">
+              <label className="text-sm font-medium mb-2 block">Поиск</label>
+              <div className="relative">
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Поиск по клиенту или описанию..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-8"
+                />
+              </div>
+            </div>
+            
+            <div className="min-w-[150px]">
+              <label className="text-sm font-medium mb-2 block">Статус</label>
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Все статусы" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Все статусы</SelectItem>
+                  <SelectItem value="Новый">Новый</SelectItem>
+                  <SelectItem value="В обработке">В обработке</SelectItem>
+                  <SelectItem value="Завершен">Завершен</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="min-w-[150px]">
+              <label className="text-sm font-medium mb-2 block">Приоритет</label>
+              <Select value={priorityFilter} onValueChange={setPriorityFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Все приоритеты" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Все приоритеты</SelectItem>
+                  <SelectItem value="Высокий">Высокий</SelectItem>
+                  <SelectItem value="Средний">Средний</SelectItem>
+                  <SelectItem value="Низкий">Низкий</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="min-w-[150px]">
+              <label className="text-sm font-medium mb-2 block">Менеджер</label>
+              <Select value={managerFilter} onValueChange={setManagerFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Все менеджеры" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Все менеджеры</SelectItem>
+                  <SelectItem value="Иванов И.И.">Иванов И.И.</SelectItem>
+                  <SelectItem value="Петров П.П.">Петров П.П.</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Button variant="outline" onClick={clearFilters}>
+              Сбросить
+            </Button>
           </div>
         </CardContent>
       </Card>

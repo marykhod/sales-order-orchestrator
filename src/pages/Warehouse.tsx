@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,9 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Package, Plus, Search, AlertTriangle, TrendingDown, ShoppingCart } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
 
 export default function Warehouse() {
   const [searchTerm, setSearchTerm] = useState('');
+  const { toast } = useToast();
 
   const inventory = [
     {
@@ -71,6 +72,20 @@ export default function Warehouse() {
     return { status: 'Нормальный', color: 'bg-green-100 text-green-800' };
   };
 
+  const handleAddProduct = () => {
+    toast({
+      title: "Добавление товара",
+      description: "Открывается форма добавления нового товара",
+    });
+  };
+
+  const handleWarehouseOrder = () => {
+    toast({
+      title: "Складской заказ",
+      description: "Открывается форма создания складского заказа",
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -81,11 +96,11 @@ export default function Warehouse() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
+          <Button variant="outline" onClick={handleWarehouseOrder}>
             <ShoppingCart className="mr-2 h-4 w-4" />
             Складской заказ
           </Button>
-          <Button>
+          <Button onClick={handleAddProduct}>
             <Plus className="mr-2 h-4 w-4" />
             Добавить товар
           </Button>
