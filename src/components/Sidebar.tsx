@@ -13,7 +13,6 @@ import {
   SidebarGroupContent,
 } from "@/components/ui/sidebar";
 import {
-  Home,
   FileText,
   ShoppingCart,
   Warehouse,
@@ -24,9 +23,9 @@ import {
 
 const menuItems = [
   {
-    title: "Главная",
+    title: "Аналитика",
     url: "/",
-    icon: Home,
+    icon: BarChart3,
   },
   {
     title: "Запросы",
@@ -49,11 +48,6 @@ const menuItems = [
     icon: Users,
   },
   {
-    title: "Аналитика",
-    url: "/analytics",
-    icon: BarChart3,
-  },
-  {
     title: "Настройки",
     url: "/settings",
     icon: Settings,
@@ -70,7 +64,7 @@ export function AppSidebar() {
           <img 
             src="/lovable-uploads/10bc8dcf-ca34-4ca3-a7d3-86be2f7ba3bd.png" 
             alt="Логотип LADOGA" 
-            className="h-12 w-auto object-contain"
+            className="h-16 w-auto object-contain"
           />
           <div className="text-center">
             <p className="text-sm text-muted-foreground">Система управления</p>

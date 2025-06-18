@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,10 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Star, Mail, Phone, MapPin, Calendar, TrendingUp, Package } from 'lucide-react';
+import { ArrowLeft, Star, Mail, Phone, MapPin, Package, Plus, Send, History } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
 
 export default function SupplierProfile() {
   const { id } = useParams();
+  const { toast } = useToast();
 
   // Мокданные для поставщика
   const supplier = {
@@ -42,12 +43,33 @@ export default function SupplierProfile() {
     ]
   };
 
+  const handleCreateOrder = () => {
+    toast({
+      title: "Создание заказа",
+      description: `Создание нового заказа для поставщика ${supplier.name}`,
+    });
+  };
+
+  const handleSendRequest = () => {
+    toast({
+      title: "Запрос отправлен",
+      description: `Запрос отправлен поставщику ${supplier.name}`,
+    });
+  };
+
+  const handleOrderHistory = () => {
+    toast({
+      title: "История заказов",
+      description: `Открыта история заказов для поставщика ${supplier.name}`,
+    });
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Активный': return 'bg-green-100 text-green-800';
-      case 'Неактивный': return 'bg-gray-100 text-gray-800';
-      case 'Заблокирован': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'Активный': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+      case 'Неактивный': return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
+      case 'Заблокирован': return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
     }
   };
 
@@ -80,6 +102,7 @@ export default function SupplierProfile() {
       <div className="grid gap-6 md:grid-cols-3">
         {/* Основная информация */}
         <div className="md:col-span-2 space-y-6">
+          {/* Общая информация */}
           <Card>
             <CardHeader>
               <CardTitle>Общая информация</CardTitle>
@@ -142,7 +165,7 @@ export default function SupplierProfile() {
                       <TableCell>{order.date}</TableCell>
                       <TableCell>₽{order.amount}</TableCell>
                       <TableCell>
-                        <Badge className="bg-green-100 text-green-800">
+                        <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
                           {order.status}
                         </Badge>
                       </TableCell>
@@ -181,6 +204,7 @@ export default function SupplierProfile() {
 
         {/* Боковая панель */}
         <div className="space-y-6">
+          {/* Рейтинг и статус */}
           <Card>
             <CardHeader>
               <CardTitle>Рейтинг и статус</CardTitle>
@@ -231,6 +255,7 @@ export default function SupplierProfile() {
             </CardContent>
           </Card>
 
+          {/* Условия работы */}
           <Card>
             <CardHeader>
               <CardTitle>Условия работы</CardTitle>
@@ -255,18 +280,22 @@ export default function SupplierProfile() {
             </CardContent>
           </Card>
 
+          {/* Действия */}
           <Card>
             <CardHeader>
               <CardTitle>Действия</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <Button className="w-full">
+              <Button className="w-full" onClick={handleCreateOrder}>
+                <Plus className="mr-2 h-4 w-4" />
                 Создать заказ
               </Button>
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full" onClick={handleSendRequest}>
+                <Send className="mr-2 h-4 w-4" />
                 Отправить запрос
               </Button>
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full" onClick={handleOrderHistory}>
+                <History className="mr-2 h-4 w-4" />
                 История заказов
               </Button>
             </CardContent>

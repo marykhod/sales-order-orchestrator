@@ -5,13 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, FileText, Download, Eye, Truck, Package, DollarSign, Calendar } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ArrowLeft, Package, FileText, Calendar, DollarSign, Truck } from 'lucide-react';
+import { DocumentViewer } from "@/components/DocumentViewer";
 
 export default function OrderDetail() {
   const { id } = useParams();
 
-  // Мокданные для заказа
   const order = {
     id: id || "ORD-001",
     date: "2024-06-13",
@@ -22,43 +22,42 @@ export default function OrderDetail() {
     paymentStatus: "Ожидает оплаты",
     deliveryDate: "2024-06-20",
     progress: 25,
-    description: "Подшипники и комплектующие для промышленного оборудования",
-    deliveryAddress: "г. Санкт-Петербург, ул. Промышленная, д. 15",
+    description: "Заказ промышленных подшипников и комплектующих",
+    manager: "Иванов И.И.",
     items: [
-      { name: "Подшипник 6208", quantity: 50, price: "2,500", total: "125,000" },
-      { name: "Уплотнитель резиновый", quantity: 20, price: "1,250", total: "25,000" }
+      { name: "Подшипник 6208", quantity: 10, price: "2,500", total: "25,000" },
+      { name: "Подшипник 6209", quantity: 15, price: "3,200", total: "48,000" },
+      { name: "Сальник 25x35x7", quantity: 20, price: "850", total: "17,000" },
     ],
     documents: [
       { name: "Договор поставки.pdf", size: "1.1 MB", type: "pdf" },
       { name: "Спецификация.xlsx", size: "425 KB", type: "xlsx" },
-      { name: "Счет на оплату.pdf", size: "290 KB", type: "pdf" }
+      { name: "Счет на оплату.pdf", size: "290 KB", type: "pdf" },
     ],
     timeline: [
-      { date: "2024-06-13", event: "Заказ размещен", status: "completed" },
-      { date: "2024-06-14", event: "Подтверждение от поставщика", status: "completed" },
-      { date: "2024-06-16", event: "Оплата счета", status: "pending" },
-      { date: "2024-06-18", event: "Отгрузка товара", status: "pending" },
-      { date: "2024-06-20", event: "Доставка", status: "pending" }
+      { date: "2024-06-13", event: "Заказ создан", status: "completed" },
+      { date: "2024-06-14", event: "Отправлен поставщику", status: "completed" },
+      { date: "2024-06-15", event: "Подтверждение поставщика", status: "pending" },
+      { date: "2024-06-20", event: "Планируемая доставка", status: "upcoming" },
     ]
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Размещено': return 'bg-blue-100 text-blue-800';
-      case 'Подтверждено': return 'bg-yellow-100 text-yellow-800';
-      case 'В пути': return 'bg-purple-100 text-purple-800';
-      case 'Выполнен': return 'bg-green-100 text-green-800';
-      case 'Отменен': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'Размещено': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
+      case 'Подтверждено': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
+      case 'В пути': return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300';
+      case 'Выполнен': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
     }
   };
 
   const getPaymentStatusColor = (status: string) => {
     switch (status) {
-      case 'Ожидает оплаты': return 'bg-red-100 text-red-800';
-      case 'Частично оплачено': return 'bg-yellow-100 text-yellow-800';
-      case 'Оплачено': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'Ожидает оплаты': return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+      case 'Частично оплачено': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
+      case 'Оплачено': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
     }
   };
 
@@ -73,16 +72,19 @@ export default function OrderDetail() {
         </Button>
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Заказ {order.id}</h2>
-          <p className="text-muted-foreground">Детальная информация по заказу</p>
+          <p className="text-muted-foreground">Детальная информация о заказе</p>
         </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
-        {/* Основная информация */}
         <div className="md:col-span-2 space-y-6">
+          {/* Основная информация */}
           <Card>
             <CardHeader>
-              <CardTitle>Основная информация</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Package className="h-5 w-5" />
+                Основная информация
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -96,32 +98,25 @@ export default function OrderDetail() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-muted-foreground">Клиент</label>
-                  <p className="font-medium">{order.client}</p>
+                  <p>{order.client}</p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-muted-foreground">Поставщик</label>
                   <p>{order.supplier}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Сумма заказа</label>
-                  <p className="font-medium text-lg">₽{order.amount}</p>
+                  <label className="text-sm font-medium text-muted-foreground">Менеджер</label>
+                  <p>{order.manager}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Дата поставки</label>
+                  <label className="text-sm font-medium text-muted-foreground">Дата доставки</label>
                   <p>{order.deliveryDate}</p>
                 </div>
               </div>
               
-              <Separator />
-              
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Описание</label>
                 <p className="mt-1">{order.description}</p>
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Адрес доставки</label>
-                <p className="mt-1">{order.deliveryAddress}</p>
               </div>
             </CardContent>
           </Card>
@@ -129,27 +124,31 @@ export default function OrderDetail() {
           {/* Состав заказа */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Package className="h-5 w-5" />
-                Состав заказа
-              </CardTitle>
+              <CardTitle>Состав заказа</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                {order.items.map((item, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                    <div>
-                      <p className="font-medium">{item.name}</p>
-                      <p className="text-sm text-muted-foreground">{item.quantity} шт. × ₽{item.price}</p>
-                    </div>
-                    <p className="font-medium">₽{item.total}</p>
-                  </div>
-                ))}
-                <Separator />
-                <div className="flex justify-between font-medium text-lg">
-                  <span>Итого:</span>
-                  <span>₽{order.amount}</span>
-                </div>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Наименование</TableHead>
+                    <TableHead>Количество</TableHead>
+                    <TableHead>Цена за ед.</TableHead>
+                    <TableHead>Сумма</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {order.items.map((item, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="font-medium">{item.name}</TableCell>
+                      <TableCell>{item.quantity}</TableCell>
+                      <TableCell>₽{item.price}</TableCell>
+                      <TableCell>₽{item.total}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <div className="mt-4 text-right">
+                <p className="text-lg font-bold">Итого: ₽{order.amount}</p>
               </div>
             </CardContent>
           </Card>
@@ -164,22 +163,18 @@ export default function OrderDetail() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {order.documents.map((doc, index) => (
+                {order.documents.map((document, index) => (
                   <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
                     <div className="flex items-center gap-3">
-                      <FileText className="h-5 w-5 text-muted-foreground" />
+                      <FileText className="h-8 w-8 text-blue-500" />
                       <div>
-                        <p className="font-medium">{doc.name}</p>
-                        <p className="text-sm text-muted-foreground">{doc.size}</p>
+                        <p className="font-medium">{document.name}</p>
+                        <p className="text-sm text-muted-foreground">{document.size}</p>
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Button size="sm" variant="outline">
-                        <Eye className="mr-2 h-4 w-4" />
-                        Просмотр
-                      </Button>
-                      <Button size="sm" variant="outline">
-                        <Download className="mr-2 h-4 w-4" />
+                      <DocumentViewer document={document} />
+                      <Button variant="outline" size="sm">
                         Скачать
                       </Button>
                     </div>
@@ -192,6 +187,7 @@ export default function OrderDetail() {
 
         {/* Боковая панель */}
         <div className="space-y-6">
+          {/* Статус */}
           <Card>
             <CardHeader>
               <CardTitle>Статус заказа</CardTitle>
@@ -217,45 +213,47 @@ export default function OrderDetail() {
                 <label className="text-sm font-medium text-muted-foreground">Прогресс выполнения</label>
                 <div className="mt-1">
                   <Progress value={order.progress} className="h-2" />
-                  <span className="text-xs text-muted-foreground">{order.progress}%</span>
+                  <span className="text-sm text-muted-foreground">{order.progress}%</span>
                 </div>
               </div>
             </CardContent>
           </Card>
 
+          {/* Финансы */}
           <Card>
             <CardHeader>
-              <CardTitle>Временная шкала</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <DollarSign className="h-5 w-5" />
+                Финансовая информация
+              </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {order.timeline.map((event, index) => (
-                  <div key={index} className="flex items-start gap-3">
-                    <div className={`w-3 h-3 rounded-full mt-1 ${
-                      event.status === 'completed' ? 'bg-green-500' : 'bg-gray-300'
-                    }`} />
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">{event.event}</p>
-                      <p className="text-xs text-muted-foreground">{event.date}</p>
-                    </div>
-                  </div>
-                ))}
+            <CardContent className="space-y-4">
+              <div className="flex justify-between">
+                <span className="text-sm text-muted-foreground">Сумма заказа:</span>
+                <span className="font-medium">₽{order.amount}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-muted-foreground">НДС (20%):</span>
+                <span className="font-medium">₽{(parseInt(order.amount.replace(',', '')) * 0.2).toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between border-t pt-2">
+                <span className="font-medium">Всего к оплате:</span>
+                <span className="font-bold">₽{(parseInt(order.amount.replace(',', '')) * 1.2).toLocaleString()}</span>
               </div>
             </CardContent>
           </Card>
 
+          {/* Действия */}
           <Card>
             <CardHeader>
               <CardTitle>Действия</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <Button className="w-full">
-                <DollarSign className="mr-2 h-4 w-4" />
-                Оплатить
+                Редактировать заказ
               </Button>
               <Button variant="outline" className="w-full">
-                <Truck className="mr-2 h-4 w-4" />
-                Отследить доставку
+                Отменить заказ
               </Button>
               <Button variant="outline" className="w-full">
                 Связаться с поставщиком
