@@ -20,8 +20,6 @@ import {
   Settings,
   BarChart3,
   Users,
-  Factory,
-  DollarSign,
 } from 'lucide-react';
 
 const menuItems = [
@@ -44,16 +42,6 @@ const menuItems = [
     title: "Склад",
     url: "/warehouse",
     icon: Warehouse,
-  },
-  {
-    title: "Производство",
-    url: "/production",
-    icon: Factory,
-  },
-  {
-    title: "Финансы",
-    url: "/finance",
-    icon: DollarSign,
   },
   {
     title: "Поставщики",

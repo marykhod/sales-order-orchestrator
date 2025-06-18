@@ -1,4 +1,6 @@
+
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -50,13 +52,6 @@ export default function Requests() {
       case 'Низкий': return 'bg-green-100 text-green-800';
       default: return 'bg-gray-100 text-gray-800';
     }
-  };
-
-  const handleView = (id: string) => {
-    toast({
-      title: "Просмотр запроса",
-      description: `Открыт запрос ${id}`,
-    });
   };
 
   const handleEdit = (id: string) => {
@@ -191,12 +186,10 @@ export default function Requests() {
                   <TableCell>{request.manager}</TableCell>
                   <TableCell>
                     <div className="flex gap-1">
-                      <Button 
-                        size="sm" 
-                        variant="ghost"
-                        onClick={() => handleView(request.id)}
-                      >
-                        <Eye className="h-4 w-4" />
+                      <Button size="sm" variant="ghost" asChild>
+                        <Link to={`/requests/${request.id}`}>
+                          <Eye className="h-4 w-4" />
+                        </Link>
                       </Button>
                       <Button 
                         size="sm" 

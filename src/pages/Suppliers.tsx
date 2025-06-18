@@ -1,4 +1,6 @@
+
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -81,13 +83,6 @@ export default function Suppliers() {
     supplier.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     supplier.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  const handleViewProfile = (supplierId: string) => {
-    toast({
-      title: "Профиль поставщика",
-      description: `Открыт профиль поставщика ${supplierId}`,
-    });
-  };
 
   const handleViewOrders = (supplierId: string) => {
     toast({
@@ -228,13 +223,11 @@ export default function Suppliers() {
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-1">
-                      <Button 
-                        size="sm" 
-                        variant="ghost"
-                        onClick={() => handleViewProfile(supplier.id)}
-                      >
-                        <Eye className="mr-1 h-3 w-3" />
-                        Профиль
+                      <Button size="sm" variant="ghost" asChild>
+                        <Link to={`/suppliers/${supplier.id}`}>
+                          <Eye className="mr-1 h-3 w-3" />
+                          Профиль
+                        </Link>
                       </Button>
                       <Button 
                         size="sm" 

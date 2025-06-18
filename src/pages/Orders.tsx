@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -225,8 +226,10 @@ export default function Orders() {
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-1">
-                      <Button size="sm" variant="ghost">
-                        <Eye className="h-4 w-4" />
+                      <Button size="sm" variant="ghost" asChild>
+                        <Link to={`/orders/${order.id}`}>
+                          <Eye className="h-4 w-4" />
+                        </Link>
                       </Button>
                       <Button size="sm" variant="ghost">
                         <Edit className="h-4 w-4" />
