@@ -8,11 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Progress } from "@/components/ui/progress";
-import { Plus, Search, Eye, Edit, FileText, DollarSign } from 'lucide-react';
+import { Plus, Search, Eye, Edit, FileText, DollarSign, Filter, Calendar, User, Package } from 'lucide-react';
 
 export default function Orders() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [paymentFilter, setPaymentFilter] = useState('all');
+  const [supplierFilter, setSupplierFilter] = useState('all');
+  const [dateFilter, setDateFilter] = useState('all');
 
   const orders = [
     {
@@ -86,8 +89,19 @@ export default function Orders() {
                          order.supplier.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          order.id.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
-    return matchesSearch && matchesStatus;
+    const matchesPayment = paymentFilter === 'all' || order.paymentStatus === paymentFilter;
+    const matchesSupplier = supplierFilter === 'all' || order.supplier === supplierFilter;
+    
+    return matchesSearch && matchesStatus && matchesPayment && matchesSupplier;
   });
+
+  const resetFilters = () => {
+    setSearchTerm('');
+    setStatusFilter('all');
+    setPaymentFilter('all');
+    setSupplierFilter('all');
+    setDateFilter('all');
+  };
 
   return (
     <div className="space-y-6">
@@ -144,36 +158,115 @@ export default function Orders() {
         </Card>
       </div>
 
-      {/* Фильтры */}
+      {/* Улучшенная фильтрация */}
       <Card>
         <CardHeader>
-          <CardTitle>Фильтры и поиск</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Filter className="h-5 w-5" />
+              Фильтры и поиск
+            </CardTitle>
+            <Button variant="outline" size="sm" onClick={resetFilters}>
+              Сбросить фильтры
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="flex gap-4">
-            <div className="flex-1">
+          <div className="space-y-4">
+            {/* Поиск */}
+            <div className="w-full">
               <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Поиск по клиенту, поставщику или номеру..."
+                  placeholder="Поиск по клиенту, поставщику или номеру заказа..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-8"
+                  className="pl-10"
                 />
               </div>
             </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="Статус" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Все статусы</SelectItem>
-                <SelectItem value="Размещено">Размещено</SelectItem>
-                <SelectItem value="Подтверждено">Подтверждено</SelectItem>
-                <SelectItem value="В пути">В пути</SelectItem>
-                <SelectItem value="Выполнен">Выполнен</SelectItem>
-              </SelectContent>
-            </Select>
+            
+            {/* Фильтры по пунктам */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Статус заказа */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium flex items-center gap-2">
+                  <Package className="h-4 w-4" />
+                  Статус заказа
+                </label>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Выберите статус" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Все статусы</SelectItem>
+                    <SelectItem value="Размещено">Размещено</SelectItem>
+                    <SelectItem value="Подтверждено">Подтверждено</SelectItem>
+                    <SelectItem value="В пути">В пути</SelectItem>
+                    <SelectItem value="Выполнен">Выполнен</SelectItem>
+                    <SelectItem value="Отменен">Отменен</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Статус оплаты */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium flex items-center gap-2">
+                  <DollarSign className="h-4 w-4" />
+                  Статус оплаты
+                </label>
+                <Select value={paymentFilter} onValueChange={setPaymentFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Выберите статус оплаты" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Все статусы</SelectItem>
+                    <SelectItem value="Ожидает оплаты">Ожидает оплаты</SelectItem>
+                    <SelectItem value="Частично оплачено">Частично оплачено</SelectItem>
+                    <SelectItem value="Оплачено">Оплачено</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Поставщик */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  Поставщик
+                </label>
+                <Select value={supplierFilter} onValueChange={setSupplierFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Выберите поставщика" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Все поставщики</SelectItem>
+                    <SelectItem value="Поставщик А">Поставщик А</SelectItem>
+                    <SelectItem value="Поставщик Б">Поставщик Б</SelectItem>
+                    <SelectItem value="Поставщик В">Поставщик В</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Период */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  Период
+                </label>
+                <Select value={dateFilter} onValueChange={setDateFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Выберите период" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Все периоды</SelectItem>
+                    <SelectItem value="today">Сегодня</SelectItem>
+                    <SelectItem value="week">Эта неделя</SelectItem>
+                    <SelectItem value="month">Этот месяц</SelectItem>
+                    <SelectItem value="quarter">Этот квартал</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
