@@ -1,5 +1,7 @@
 # Welcome to your Lovable project
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/636fd3f330fe4d6cbe5cc7482a19e690)](https://app.codacy.com/gh/marykhod/sales-order-orchestrator?utm_source=github.com&utm_medium=referral&utm_content=marykhod/sales-order-orchestrator&utm_campaign=Badge_Grade)
+
 ## Project info
 
 **URL**: https://lovable.dev/projects/6cb956d5-2afc-4763-8d11-b9b08ae6b177
