@@ -172,7 +172,6 @@ export default function Requests() {
                   <SelectValue placeholder="Все статусы" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Все статусы</SelectItem>
                   <SelectItem value="Новый">Новый</SelectItem>
                   <SelectItem value="В обработке">В обработке</SelectItem>
                   <SelectItem value="Завершен">Завершен</SelectItem>
@@ -187,7 +186,6 @@ export default function Requests() {
                   <SelectValue placeholder="Все приоритеты" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Все приоритеты</SelectItem>
                   <SelectItem value="Высокий">Высокий</SelectItem>
                   <SelectItem value="Средний">Средний</SelectItem>
                   <SelectItem value="Низкий">Низкий</SelectItem>
@@ -202,7 +200,6 @@ export default function Requests() {
                   <SelectValue placeholder="Все менеджеры" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Все менеджеры</SelectItem>
                   <SelectItem value="Иванов И.И.">Иванов И.И.</SelectItem>
                   <SelectItem value="Петров П.П.">Петров П.П.</SelectItem>
                 </SelectContent>
